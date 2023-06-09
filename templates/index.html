@@ -1,0 +1,55 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Count CGs</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <style>
+        .container {
+            margin: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Count CGs in a DNA Sequence</h1>
+        <div class="form-group">
+            <label for="dna_seq">Enter the DNA Sequence:</label>
+            <input type="text" class="form-control" id="dna_seq" placeholder="DNA Seq containing NACGT" style="width: 1500px;">
+        </div>
+        <button class="btn btn-primary" onclick="countCG()">Count</button>
+        <div id="output1"></div>
+        <div id="output2"></div>
+    </div>
+
+    <script>
+        function countCG() {
+            var dnaSeq = document.getElementById("dna_seq").value;
+
+            var xhr = new XMLHttpRequest();
+            var url = "/process_dna_sequence";
+            var formData = new FormData();
+            formData.append("dna_seq", dnaSeq);
+
+            xhr.open("POST", url, true);
+
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    var outputDiv1 = document.getElementById("output1");
+                    var outputDiv2 = document.getElementById("output2");
+                    outputDiv1.innerHTML = "Actual CpGs Count: " + response.count1;
+                    outputDiv2.innerHTML = "Predicted CpGs count: " + response.count2;
+                }
+            };
+
+            xhr.send(formData);
+        }
+    </script>
+</body>
+</html>
+
