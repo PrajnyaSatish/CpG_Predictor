@@ -6,24 +6,25 @@ from utils import dnaseq_to_intseq
 app = Flask(__name__)
 
 
-
 @app.route('/')
 def index():
     return render_template("index.html")
 
+
 # some config
 LSTM_HIDDEN = 64
-LSTM_LAYER = 6
-EMBED_DIM=10
-batch_size = 384
+LSTM_LAYER = 20
+batch_size = 64
 learning_rate = 0.5
-dropout_p=0.4
-epoch_num = 100
-vocab_size = len("NACGT")
+dropout_p = 0.5
+epoch_num = 50
+vocab_size = 6
+EMBED_DIM = 20
 
-predict_model = CpGPredictor(LSTM_LAYER, LSTM_HIDDEN, dropout_p, 6, EMBED_DIM)
+predict_model = CpGPredictor(LSTM_LAYER, LSTM_HIDDEN, dropout_p, vocab_size, EMBED_DIM)
 predict_model.load_state_dict(torch.load("models/padded_seq_model_weights.pth"))
 predict_model.eval()
+
 
 @app.route('/process_dna_sequence', methods=['POST'])
 def process_dna_sequence():
@@ -42,6 +43,7 @@ def process_dna_sequence():
     }
 
     return jsonify(response)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
